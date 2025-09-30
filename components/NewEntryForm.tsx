@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { saveEntry } from '@/lib/db';
+import { saveEntry } from '../lib/db';
 
 interface NewEntryFormProps {
   onEntryAdded: () => void;

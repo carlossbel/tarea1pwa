@@ -1,6 +1,6 @@
 'use client';
 
-import { DiaryEntry, deleteEntry } from '@/lib/db';
+import { DiaryEntry, deleteEntry } from '../lib/db';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 

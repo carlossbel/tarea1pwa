@@ -1,43 +1,44 @@
-import localforage from 'localforage';
+export async function requestNotificationPermission(): Promise<boolean> {
+  if (!('Notification' in window)) {
+    console.log('Este navegador no soporta notificaciones');
+    return false;
+  }
 
-export interface DiaryEntry {
-  id: string;
-  title: string;
-  content: string;
-  date: string;
-  photo?: string;
-  quote?: string;
-  location?: {
-    latitude: number;
-    longitude: number;
-    address?: string;
-  };
+  if (Notification.permission === 'granted') {
+    return true;
+  }
+
+  if (Notification.permission !== 'denied') {
+    const permission = await Notification.requestPermission();
+    return permission === 'granted';
+  }
+
+  return false;
 }
 
-const diaryStore = localforage.createInstance({
-  name: 'MiDiario',
-  storeName: 'entries'
-});
+export function sendNotification(title: string, body: string, icon?: string) {
+  if (Notification.permission === 'granted') {
+    const notification = new Notification(title, {
+      body,
+      icon: icon || '/icons/icon-192x192.png',
+      badge: '/icons/icon-192x192.png',
+      tag: 'diary-reminder'
+    });
 
-export async function saveEntry(entry: Omit<DiaryEntry, 'id'>): Promise<DiaryEntry> {
-  const id = Date.now().toString();
-  const newEntry: DiaryEntry = { ...entry, id };
-  await diaryStore.setItem(id, newEntry);
-  return newEntry;
+    notification.onclick = () => {
+      window.focus();
+      notification.close();
+    };
+  }
 }
 
-export async function getEntries(): Promise<DiaryEntry[]> {
-  const entries: DiaryEntry[] = [];
-  await diaryStore.iterate((value: DiaryEntry) => {
-    entries.push(value);
-  });
-  return entries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-}
-
-export async function deleteEntry(id: string): Promise<void> {
-  await diaryStore.removeItem(id);
-}
-
-export async function getEntry(id: string): Promise<DiaryEntry | null> {
-  return await diaryStore.getItem(id);
+export function scheduleDailyReminder() {
+  if ('serviceWorker' in navigator && 'Notification' in window) {
+    setTimeout(() => {
+      sendNotification(
+        '📝 Hora de escribir',
+        '¿Qué tal estuvo tu día? Escribe una nueva entrada en tu diario'
+      );
+    }, 5000);
+  }
 }

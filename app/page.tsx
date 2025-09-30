@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import EntryCard from '@/components/EntryCard';
 import NewEntryForm from '@/components/NewEntryForm';
 import NotificationButton from '@/components/NotificationButton';
-import { getEntries, DiaryEntry } from '@/lib/db';
+import { getEntries, DiaryEntry } from '../lib/db';
 
 export default function Home() {
   const router = useRouter();

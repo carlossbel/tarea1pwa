@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { requestNotificationPermission, scheduleDailyReminder } from '@/lib/notifications';
+import { requestNotificationPermission, scheduleDailyReminder } from '../lib/notifications';
 
 export default function NotificationButton() {
   const [permission, setPermission] = useState<NotificationPermission>('default');
